@@ -10,7 +10,7 @@
 		4C1E969C2983DA2C0046AFD6 /* AdBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E969B2983DA2C0046AFD6 /* AdBreakView.swift */; };
 		4C56DF0E2983922E00F309EC /* TrackingEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C56DF0D2983922E00F309EC /* TrackingEventView.swift */; };
 		4C56DF102983CEFE00F309EC /* AdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C56DF0F2983CEFE00F309EC /* AdView.swift */; };
-		4C56DF122983D2C800F309EC /* AdBeaconData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C56DF112983D2C800F309EC /* AdBeaconData.swift */; };
+		4C56DF122983D2C800F309EC /* SamplePreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C56DF112983D2C800F309EC /* SamplePreviewData.swift */; };
 		4C56DF142983D48F00F309EC /* sample-metadata.json in Resources */ = {isa = PBXBuildFile; fileRef = 4C56DF132983D48F00F309EC /* sample-metadata.json */; };
 		4C8F72B82987A2000049CD01 /* AdPodListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F72B72987A2000049CD01 /* AdPodListView.swift */; };
 		4C8F72BA2987A2AE0049CD01 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8F72B92987A2AE0049CD01 /* SessionView.swift */; };
@@ -46,7 +46,7 @@
 		4C1E969B2983DA2C0046AFD6 /* AdBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBreakView.swift; sourceTree = "<group>"; };
 		4C56DF0D2983922E00F309EC /* TrackingEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEventView.swift; sourceTree = "<group>"; };
 		4C56DF0F2983CEFE00F309EC /* AdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdView.swift; sourceTree = "<group>"; };
-		4C56DF112983D2C800F309EC /* AdBeaconData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBeaconData.swift; sourceTree = "<group>"; };
+		4C56DF112983D2C800F309EC /* SamplePreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplePreviewData.swift; sourceTree = "<group>"; };
 		4C56DF132983D48F00F309EC /* sample-metadata.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "sample-metadata.json"; sourceTree = "<group>"; };
 		4C8F72B72987A2000049CD01 /* AdPodListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdPodListView.swift; sourceTree = "<group>"; };
 		4C8F72B92987A2AE0049CD01 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
@@ -124,11 +124,11 @@
 			children = (
 				4CED6F3D2979311200F5386E /* ClientSideAdTrackingDemoApp.swift */,
 				4CED6F3F2979311200F5386E /* ContentView.swift */,
-				4C8F72B92987A2AE0049CD01 /* SessionView.swift */,
 				4CBBA87D29793E8D00ED4018 /* PlayerView.swift */,
-				4C56DF0F2983CEFE00F309EC /* AdView.swift */,
-				4C1E969B2983DA2C0046AFD6 /* AdBreakView.swift */,
+				4C8F72B92987A2AE0049CD01 /* SessionView.swift */,
 				4C8F72B72987A2000049CD01 /* AdPodListView.swift */,
+				4C1E969B2983DA2C0046AFD6 /* AdBreakView.swift */,
+				4C56DF0F2983CEFE00F309EC /* AdView.swift */,
 				4C56DF0D2983922E00F309EC /* TrackingEventView.swift */,
 				4CED6F412979311300F5386E /* Assets.xcassets */,
 				4CED6F432979311300F5386E /* ClientSideAdTrackingDemo.entitlements */,
@@ -142,7 +142,7 @@
 			children = (
 				4CED6F452979311300F5386E /* Preview Assets.xcassets */,
 				4C56DF132983D48F00F309EC /* sample-metadata.json */,
-				4C56DF112983D2C800F309EC /* AdBeaconData.swift */,
+				4C56DF112983D2C800F309EC /* SamplePreviewData.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -301,7 +301,7 @@
 			files = (
 				4C56DF0E2983922E00F309EC /* TrackingEventView.swift in Sources */,
 				4C1E969C2983DA2C0046AFD6 /* AdBreakView.swift in Sources */,
-				4C56DF122983D2C800F309EC /* AdBeaconData.swift in Sources */,
+				4C56DF122983D2C800F309EC /* SamplePreviewData.swift in Sources */,
 				4CBBA87E29793E8E00ED4018 /* PlayerView.swift in Sources */,
 				4C56DF102983CEFE00F309EC /* AdView.swift in Sources */,
 				4C8F72BA2987A2AE0049CD01 /* SessionView.swift in Sources */,

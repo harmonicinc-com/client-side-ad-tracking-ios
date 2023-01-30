@@ -22,7 +22,7 @@ struct AdPodListView: View {
                     AdBreakView(adBreak: pod)
                 }
             }
-            .padding()
+            .font(.caption2)
         }
     }
 }
@@ -30,5 +30,6 @@ struct AdPodListView: View {
 struct AdPodListView_Previews: PreviewProvider {
     static var previews: some View {
         AdPodListView()
+            .environmentObject(HarmonicAdTracker(adPods: sampleAdBeacon?.adBreaks ?? []))
     }
 }

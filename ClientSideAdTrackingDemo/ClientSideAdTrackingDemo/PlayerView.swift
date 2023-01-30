@@ -27,14 +27,7 @@ struct PlayerView: View {
     var body: some View {
         VStack {
             VideoPlayer(player: player)
-                .frame(height: 300)
-                .onAppear {
-                    if let load = session.load {
-                        Task {
-                            await load("http://10.50.110.66:20202/variant/v1/dai/HLS/Live/channel(c071e4fd-e7cd-4312-e884-d7546870490e)/variant.m3u8")
-                        }
-                    }
-                }
+                .frame(height: 250)
                 .onReceive(checkNeedSendBeaconTimer) { _ in
                     let playhead = (player.currentItem?.currentDate()?.timeIntervalSince1970 ?? 0) * 1000
                     Task {
@@ -42,8 +35,7 @@ struct PlayerView: View {
                     }
                 }
                 .onReceive(session.$sessionInfo) { info in
-                    if let info = info {
-                        let url = URL(string: info.manifestUrl ?? "")!
+                    if let url = URL(string: info.manifestUrl) {
                         player.replaceCurrentItem(with: AVPlayerItem(url: url))
                         player.play()
                     }
@@ -55,5 +47,7 @@ struct PlayerView: View {
 struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
         PlayerView()
+            .environmentObject(sampleSession)
+            .environmentObject(HarmonicAdTracker())
     }
 }

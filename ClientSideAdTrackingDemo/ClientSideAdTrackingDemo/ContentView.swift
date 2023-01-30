@@ -29,14 +29,15 @@ struct ContentView: View {
     var body: some View {
         VStack {
             PlayerView()
-                .environmentObject(adTracker)
-                .environmentObject(session)
-            SessionView()
-                .environmentObject(session)
-            AdPodListView()
-                .environmentObject(adTracker)
+            VStack {
+                SessionView()
+                AdPodListView()
+            }
+            .padding()
             Spacer()
         }
+        .environmentObject(adTracker)
+        .environmentObject(session)
         .onAppear {
             session.load = loadMedia
         }
@@ -50,9 +51,7 @@ struct ContentView: View {
 
 extension ContentView {
     private func checkNeedUpdate() async {
-        guard var url = session.sessionInfo?.adTrackingMetadataUrl else {
-            return
-        }
+        var url = session.sessionInfo.adTrackingMetadataUrl
         let lastPlayheadTime = adTracker.getPlayheadTime()
         let result = await refreshMetadata(url: url, time: lastPlayheadTime)
         if let lastDataRange = lastDataRange {

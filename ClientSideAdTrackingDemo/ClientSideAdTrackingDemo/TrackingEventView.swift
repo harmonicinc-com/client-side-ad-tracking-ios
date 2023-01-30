@@ -32,15 +32,15 @@ struct TrackingEventView: View {
             VStack(alignment: .leading) {
                 Text("Event: \((trackingEvent.event ?? .unknown).rawValue)")
                     .bold()
-                    .font(.subheadline)
+                    .font(.caption)
                 ForEach(trackingEvent.signalingUrls, id: \.self) { url in
                     Text("URL: \(url)")
-                        .font(.caption)
+                        .font(.caption2)
                         .lineLimit(2)
                         .truncationMode(.middle)
                 }
                 Text("Time: \(dateString)")
-                    .font(.caption)
+                    .font(.caption2)
             }
         }
     }
