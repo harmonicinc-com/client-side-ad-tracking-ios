@@ -42,7 +42,6 @@ struct PlayerView: View {
                     let playhead = (player.currentItem?.currentDate()?.timeIntervalSince1970 ?? 0) * 1000
 //                    print("playhead: \(playhead)")
                     Task {
-                        await adTracker?.updatePlayheadTime(playhead)
                         await adTracker?.needSendBeacon(time: playhead)
                     }
                 }

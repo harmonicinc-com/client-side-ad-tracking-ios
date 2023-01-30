@@ -99,7 +99,6 @@
 		4CED6F312979311200F5386E = {
 			isa = PBXGroup;
 			children = (
-				4CED6F68297931E200F5386E /* Packages */,
 				4CED6F3C2979311200F5386E /* ClientSideAdTrackingDemo */,
 				4CED6F4E2979311300F5386E /* ClientSideAdTrackingDemoTests */,
 				4CED6F582979311300F5386E /* ClientSideAdTrackingDemoUITests */,
@@ -161,13 +160,6 @@
 				4CED6F5B2979311300F5386E /* ClientSideAdTrackingDemoUITestsLaunchTests.swift */,
 			);
 			path = ClientSideAdTrackingDemoUITests;
-			sourceTree = "<group>";
-		};
-		4CED6F68297931E200F5386E /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
