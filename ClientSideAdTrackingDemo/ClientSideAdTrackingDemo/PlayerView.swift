@@ -9,18 +9,20 @@ import SwiftUI
 import AVKit
 import HarmonicClientSideAdTracking
 
+let BEACON_UPDATE_INTERVAL: TimeInterval = 0.5
+
 struct PlayerView: View {
     
     @EnvironmentObject
     var session: Session
     
-//    @EnvironmentObject
-    var adTracker: ClientSideAdTracker?
+    @EnvironmentObject
+    var adTracker: HarmonicAdTracker
     
     @State
-    var player = AVPlayer()
+    private var player = AVPlayer()
     
-    let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+    private let checkNeedSendBeaconTimer = Timer.publish(every: BEACON_UPDATE_INTERVAL, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
@@ -30,31 +32,22 @@ struct PlayerView: View {
                     if let load = session.load {
                         Task {
                             await load("http://10.50.110.66:20202/variant/v1/dai/HLS/Live/channel(c071e4fd-e7cd-4312-e884-d7546870490e)/variant.m3u8")
-
                         }
                     }
-                    
-//                    let url = URL(string: "http://10.50.110.66:20202/variant/v1/dai/HLS/Live/channel(c071e4fd-e7cd-4312-e884-d7546870490e)/variant.m3u8")!
-//                    player.replaceCurrentItem(with: AVPlayerItem(url: url))
-//                    player.play()
                 }
-                .onReceive(timer) { _ in
+                .onReceive(checkNeedSendBeaconTimer) { _ in
                     let playhead = (player.currentItem?.currentDate()?.timeIntervalSince1970 ?? 0) * 1000
-//                    print("playhead: \(playhead)")
                     Task {
-                        await adTracker?.needSendBeacon(time: playhead)
+                        await adTracker.needSendBeacon(time: playhead)
                     }
                 }
                 .onReceive(session.$sessionInfo) { info in
-                    print("Received info: \(info)")
                     if let info = info {
                         let url = URL(string: info.manifestUrl ?? "")!
                         player.replaceCurrentItem(with: AVPlayerItem(url: url))
-                        print("player.currentItem: \(player.currentItem.debugDescription)")
                         player.play()
                     }
                 }
-            Spacer()
         }
     }
 }
