@@ -11,9 +11,6 @@ struct AssetListView: View {
     @StateObject
     private var assetProvider = AssetProvider()
     
-//    @State
-//    private var assets: [AssetItem] = []
-    
     @State
     private var presentDetail = false
     
