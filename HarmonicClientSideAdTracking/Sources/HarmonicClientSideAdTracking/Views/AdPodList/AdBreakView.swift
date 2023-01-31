@@ -1,12 +1,13 @@
 //
 //  AdBreakView.swift
-//  ClientSideAdTrackingDemo
+//
 //
 //  Created by Michael on 27/1/2023.
 //
 
 import SwiftUI
-import HarmonicClientSideAdTracking
+
+let KEEP_PAST_AD_MS: Double = 2_000
 
 struct AdBreakView: View {
     @EnvironmentObject
@@ -28,7 +29,7 @@ struct AdBreakView: View {
             if let pod = adPods.first(where: { $0.id == adBreak.id }),
                 let startTime = pod.startTime,
                 let duration = pod.duration {
-                expandAdBreak = adTracker.getPlayheadTime() <= startTime + duration + 2000
+                expandAdBreak = adTracker.getPlayheadTime() <= startTime + duration + KEEP_PAST_AD_MS
             }
         }
     }
@@ -37,5 +38,6 @@ struct AdBreakView: View {
 struct AdBreakView_Previews: PreviewProvider {
     static var previews: some View {
         AdBreakView(adBreak: sampleAdBeacon?.adBreaks.first ?? AdBreak())
+            .environmentObject(HarmonicAdTracker())
     }
 }

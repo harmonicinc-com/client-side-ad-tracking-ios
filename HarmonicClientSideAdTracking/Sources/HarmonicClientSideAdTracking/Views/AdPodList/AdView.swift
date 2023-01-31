@@ -1,12 +1,11 @@
 //
 //  AdView.swift
-//  ClientSideAdTrackingDemo
+//
 //
 //  Created by Michael on 27/1/2023.
 //
 
 import SwiftUI
-import HarmonicClientSideAdTracking
 
 struct AdView: View {
     @EnvironmentObject
@@ -32,7 +31,7 @@ struct AdView: View {
                 let ad = pod.ads.first(where: { $0.id == ad.id }),
                 let startTime = ad.startTime,
                 let duration = ad.duration {
-                expandAd = adTracker.getPlayheadTime() <= startTime + duration + 2000
+                expandAd = adTracker.getPlayheadTime() <= startTime + duration + KEEP_PAST_AD_MS
             }
         }
     }
@@ -41,5 +40,6 @@ struct AdView: View {
 struct AdView_Previews: PreviewProvider {
     static var previews: some View {
         AdView(ad: sampleAdBeacon?.adBreaks.first?.ads.first ?? Ad())
+            .environmentObject(HarmonicAdTracker())
     }
 }

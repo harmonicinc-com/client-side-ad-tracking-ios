@@ -1,17 +1,16 @@
 //
 //  PlayerView.swift
-//  ClientSideAdTrackingDemo
+//
 //
 //  Created by Michael on 19/1/2023.
 //
 
 import SwiftUI
 import AVKit
-import HarmonicClientSideAdTracking
 
 let BEACON_UPDATE_INTERVAL: TimeInterval = 0.5
 
-struct PlayerView: View {
+public struct PlayerView: View {
     
     @EnvironmentObject
     var session: Session
@@ -19,17 +18,20 @@ struct PlayerView: View {
     @EnvironmentObject
     var adTracker: HarmonicAdTracker
     
-    @State
-    private var player = AVPlayer()
+    let player: AVPlayer
     
     private let checkNeedSendBeaconTimer = Timer.publish(every: BEACON_UPDATE_INTERVAL, on: .main, in: .common).autoconnect()
     
-    var body: some View {
+    public init(player: AVPlayer) {
+        self.player = player
+    }
+    
+    public var body: some View {
         VStack {
             VideoPlayer(player: player)
                 .frame(height: 250)
                 .onReceive(checkNeedSendBeaconTimer) { _ in
-                    let playhead = (player.currentItem?.currentDate()?.timeIntervalSince1970 ?? 0) * 1000
+                    let playhead = (player.currentItem?.currentDate()?.timeIntervalSince1970 ?? 0) * 1_000
                     Task {
                         await adTracker.needSendBeacon(time: playhead)
                     }
@@ -46,7 +48,7 @@ struct PlayerView: View {
 
 struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
-        PlayerView()
+        PlayerView(player: AVPlayer())
             .environmentObject(sampleSession)
             .environmentObject(HarmonicAdTracker())
     }

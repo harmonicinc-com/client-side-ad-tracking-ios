@@ -1,12 +1,11 @@
 //
 //  TrackingEventView.swift
-//  ClientSideAdTrackingDemo
+//
 //
 //  Created by Michael on 27/1/2023.
 //
 
 import SwiftUI
-import HarmonicClientSideAdTracking
 
 struct TrackingEventView: View {
     @ObservedObject
