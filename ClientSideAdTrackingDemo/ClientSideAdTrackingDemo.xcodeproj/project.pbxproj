@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4C15D9A32988EA5D00373678 /* AssetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C15D9A22988EA5D00373678 /* AssetProvider.swift */; };
+		4C15D9DD2989FC9500373678 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C15D9DC2989FC9500373678 /* Preview Assets.xcassets */; };
 		4C87EB612988CE6D0092E049 /* AssetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C87EB602988CE6D0092E049 /* AssetItem.swift */; };
 		4C87EB632988CFD90092E049 /* AssetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C87EB622988CFD90092E049 /* AssetListView.swift */; };
-		4C8F72C12988C1280049CD01 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C8F72C02988C1280049CD01 /* Preview Assets.xcassets */; };
 		4CBBA87A297937B500ED4018 /* HarmonicClientSideAdTracking in Frameworks */ = {isa = PBXBuildFile; productRef = 4CBBA879297937B500ED4018 /* HarmonicClientSideAdTracking */; };
 		4CD61E2D2988D72D00FF0924 /* AssetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD61E2C2988D72D00FF0924 /* AssetDetailView.swift */; };
 		4CED6F3E2979311200F5386E /* ClientSideAdTrackingDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CED6F3D2979311200F5386E /* ClientSideAdTrackingDemoApp.swift */; };
@@ -40,9 +40,9 @@
 
 /* Begin PBXFileReference section */
 		4C15D9A22988EA5D00373678 /* AssetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetProvider.swift; sourceTree = "<group>"; };
+		4C15D9DC2989FC9500373678 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4C87EB602988CE6D0092E049 /* AssetItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetItem.swift; sourceTree = "<group>"; };
 		4C87EB622988CFD90092E049 /* AssetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetListView.swift; sourceTree = "<group>"; };
-		4C8F72C02988C1280049CD01 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Preview Assets.xcassets"; path = "../../../HarmonicClientSideAdTracking/Sources/HarmonicClientSideAdTracking/Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4CD61E2C2988D72D00FF0924 /* AssetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetDetailView.swift; sourceTree = "<group>"; };
 		4CED6F3A2979311200F5386E /* ClientSideAdTrackingDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClientSideAdTrackingDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CED6F3D2979311200F5386E /* ClientSideAdTrackingDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientSideAdTrackingDemoApp.swift; sourceTree = "<group>"; };
@@ -104,7 +104,7 @@
 		4C8F72BF2988C0FB0049CD01 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				4C8F72C02988C1280049CD01 /* Preview Assets.xcassets */,
+				4C15D9DC2989FC9500373678 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -276,7 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C8F72C12988C1280049CD01 /* Preview Assets.xcassets in Resources */,
+				4C15D9DD2989FC9500373678 /* Preview Assets.xcassets in Resources */,
 				4CED6F422979311300F5386E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -476,7 +476,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -514,7 +514,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
