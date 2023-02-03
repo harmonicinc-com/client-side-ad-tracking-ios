@@ -33,6 +33,13 @@ class AssetProvider: ObservableObject {
         saveAssetsToUserDefaults()
     }
     
+    func editAsset(_ asset: AssetItem) {
+        if let index = assets.firstIndex(where: { $0.id == asset.id }) {
+            assets[index] = asset
+        }
+        saveAssetsToUserDefaults()
+    }
+    
     private func loadAssetsFromUserDefaults() {
         if let data = UserDefaults.standard.object(forKey: USERDEFAULTS_ASSETS_KEY) as? Data {
             do {

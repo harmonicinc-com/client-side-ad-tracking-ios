@@ -37,6 +37,9 @@ struct AssetPlaybackView: View {
     @State
     private var errorMessage = ""
     
+    @State
+    private var presentEditScreen = false
+    
     private let player = AVPlayer()
     
     private let decoder = JSONDecoder()
@@ -54,6 +57,12 @@ struct AssetPlaybackView: View {
             Spacer()
         }
         .toolbar(content: {
+            Button("Edit") {
+                presentEditScreen = true
+            }
+            .sheet(isPresented: $presentEditScreen) {
+                AssetDetailView(asset: asset, isNewItem: false)
+            }
             Button("Load") {
                 Task {
                     await loadMedia(urlString: session.sessionInfo.mediaUrl)
@@ -64,8 +73,8 @@ struct AssetPlaybackView: View {
         .navigationBarTitleDisplayMode(.inline)
         .environmentObject(adTracker)
         .environmentObject(session)
-        .onAppear {
-            session.sessionInfo.mediaUrl = asset.urlString
+        .onReceive(asset.$urlString) { url in
+            session.sessionInfo.mediaUrl = url
         }
         .onReceive(refreshMetadataTimer) { _ in
             Task {

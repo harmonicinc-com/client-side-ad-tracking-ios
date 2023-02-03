@@ -8,38 +8,40 @@
 import SwiftUI
 
 struct AssetListView: View {
-    @StateObject
+    @ObservedObject
     private var assetProvider = AssetProvider()
     
     @State
-    private var presentDetail = false
+    private var presentAddScreen = false
     
     var body: some View {
         NavigationView {
-            List(assetProvider.assets) { asset in
-                NavigationLink(destination: AssetPlaybackView(asset: asset)) {
-                    Text(asset.name)
-                        .swipeActions {
-                            Button("Delete") {
-                                assetProvider.deleteAsset(asset)
-                            }
-                            .tint(.red)
+            List {
+                ForEach(assetProvider.assets) { asset in
+                    NavigationLink(destination: AssetPlaybackView(asset: asset)) {
+                        Text(asset.name)
+                    }
+                    .swipeActions {
+                        Button("Delete") {
+                            assetProvider.deleteAsset(asset)
                         }
+                        .tint(.red)
+                    }
                 }
             }
             .navigationTitle("Assets")
             .toolbar {
                 Button {
-                    presentDetail = true
+                    presentAddScreen = true
                 } label: {
                     Image(systemName: "plus")
                 }
-                .sheet(isPresented: $presentDetail) {
-                    AssetDetailView(asset: AssetItem(), presentedAsModal: $presentDetail)
-                        .environmentObject(assetProvider)
+                .sheet(isPresented: $presentAddScreen) {
+                    AssetDetailView(asset: AssetItem(), isNewItem: true)
                 }
             }
         }
+        .environmentObject(assetProvider)
     }
 }
 

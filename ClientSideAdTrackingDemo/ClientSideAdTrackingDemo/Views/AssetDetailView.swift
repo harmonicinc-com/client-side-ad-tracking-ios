@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct AssetDetailView: View {
-    @State
+    @ObservedObject
     var asset: AssetItem
     
-    @Binding
-    var presentedAsModal: Bool
+    let isNewItem: Bool
+    
+    @Environment(\.dismiss)
+    var dismiss
     
     @EnvironmentObject
     var assetProvider: AssetProvider
@@ -28,15 +30,23 @@ struct AssetDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
-                        presentedAsModal = false
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Confirm") {
-                        assetProvider.saveAsset(asset)
-                        presentedAsModal = false
+                    if isNewItem {
+                        Button("Confirm") {
+                            assetProvider.saveAsset(asset)
+                            dismiss()
+                        }
+                        .disabled(asset.name.isEmpty || asset.urlString.isEmpty)
+                    } else {
+                        Button("Update") {
+                            assetProvider.editAsset(asset)
+                            dismiss()
+                        }
+                        .disabled(asset.name.isEmpty || asset.urlString.isEmpty)
                     }
-                    .disabled(asset.name.isEmpty || asset.urlString.isEmpty)
                 }
             }
         }
@@ -45,7 +55,7 @@ struct AssetDetailView: View {
 
 struct AssetDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        AssetDetailView(asset: AssetItem(), presentedAsModal: .constant(false))
+        AssetDetailView(asset: AssetItem(), isNewItem: false)
             .environmentObject(AssetProvider())
     }
 }
