@@ -102,8 +102,9 @@ extension AssetPlaybackView {
             
             _ = await refreshMetadata(urlString: adTrackingMetadataUrl, time: nil)
         } catch {
-            errorMessage = "Error loading media: \(error)"
+            errorMessage = "Error loading media with URL: \(urlString); Error: \(error)"
             showError = true
+            Self.logger.error("\(errorMessage, privacy: .public)")
         }
     }
     
@@ -142,8 +143,9 @@ extension AssetPlaybackView {
 
             return true
         } catch {
-            errorMessage = "Error refreshing metadata: \(error)"
+            errorMessage = "Error refreshing metadata with URL: \(urlString); Error: \(error)"
             showError = true
+            Self.logger.error("\(errorMessage, privacy: .public)")
             return false
         }
     }
@@ -152,17 +154,20 @@ extension AssetPlaybackView {
         guard let url = URL(string: urlString) else {
             errorMessage = "Invalid URL: \(urlString)"
             showError = true
+            Self.logger.error("\(errorMessage, privacy: .public)")
             return nil
         }
         let (data, response) = try await URLSession.shared.data(from: url)
         guard let httpResponse = response as? HTTPURLResponse else {
-            errorMessage = "Cannot cast URLResponse as HTTPURLResponse"
+            errorMessage = "Cannot cast URLResponse as HTTPURLResponse for URL: \(urlString)"
             showError = true
+            Self.logger.error("\(errorMessage, privacy: .public)")
             return nil
         }
         if !(200...299 ~= httpResponse.statusCode) {
-            errorMessage = "Invalid response status: \(httpResponse.statusCode)"
+            errorMessage = "Invalid response status: \(httpResponse.statusCode) for URL: \(urlString)"
             showError = true
+            Self.logger.error("\(errorMessage, privacy: .public)")
             return nil
         }
         return (data, httpResponse)
