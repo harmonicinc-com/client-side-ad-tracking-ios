@@ -6,10 +6,15 @@
 //
 
 import Foundation
+import os
 
 let USERDEFAULTS_ASSETS_KEY = "assets"
 
 class AssetProvider: ObservableObject {
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: AssetProvider.self)
+    )
     
     @Published
     var assets: [AssetItem] = []
@@ -33,7 +38,7 @@ class AssetProvider: ObservableObject {
             do {
                 assets = try JSONDecoder().decode([AssetItem].self, from: data)
             } catch {
-                print("Failed to decode assets: \(error)")
+                Self.logger.error("Failed to decode assets: \(error, privacy: .public)")
             }
         }
     }
@@ -43,7 +48,7 @@ class AssetProvider: ObservableObject {
             let data = try JSONEncoder().encode(assets)
             UserDefaults.standard.set(data, forKey: USERDEFAULTS_ASSETS_KEY)
         } catch {
-            print("Failed to encode assets: \(error)")
+            Self.logger.error("Failed to encode assets: \(error, privacy: .public)")
         }
     }
     

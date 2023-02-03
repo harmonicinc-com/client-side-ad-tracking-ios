@@ -8,12 +8,18 @@
 import SwiftUI
 import AVFoundation
 import HarmonicClientSideAdTracking
+import os
 
 let AD_TRACING_METADATA_FILE_NAME = "metadata"
 let EARLY_FETCH_MS: Double = 5_000
 let METADATA_UPDATE_INTERVAL: TimeInterval = 4
 
 struct AssetPlaybackView: View {
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: AssetPlaybackView.self)
+    )
+    
     let asset: AssetItem
     
     @StateObject
@@ -41,7 +47,7 @@ struct AssetPlaybackView: View {
         VStack {
             PlayerView(player: player)
             VStack {
-                SessionView(playerObserver: PlayerObserver(player: player))
+                SessionView(player: player)
                 AdPodListView()
             }
             .padding()
@@ -119,18 +125,21 @@ extension AssetPlaybackView {
             guard let (data, _) = try await makeRequestTo(urlString) else {
                 return false
             }
-                        
+
             decoder.dateDecodingStrategy = .millisecondsSince1970
             let adBeacon = try decoder.decode(AdBeacon.self, from: data)
             if let lastDataRange = adBeacon.dataRange {
                 self.lastDataRange = lastDataRange
                 if !isInRange(time: time, range: lastDataRange) {
-                    print("Invalid metadata: Not in range. Time: \(String(describing: time))")
+                    let timeDate = Date(timeIntervalSince1970: (time ?? 0) / 1_000)
+                    let startDate = Date(timeIntervalSince1970: (lastDataRange.start ?? 0) / 1_000)
+                    let endDate = Date(timeIntervalSince1970: (lastDataRange.end ?? 0) / 1_000)
+                    Self.logger.warning("Invalid metadata:  Time (\(timeDate, privacy: .public)) not in range (start: \(startDate, privacy: .public), end: \(endDate, privacy: .public))")
                     return false
                 }
             }
             adTracker.updatePods(adBeacon.adBreaks)
-            
+
             return true
         } catch {
             errorMessage = "Error refreshing metadata: \(error)"

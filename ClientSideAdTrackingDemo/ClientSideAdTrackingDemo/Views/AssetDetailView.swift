@@ -36,6 +36,7 @@ struct AssetDetailView: View {
                         assetProvider.saveAsset(asset)
                         presentedAsModal = false
                     }
+                    .disabled(asset.name.isEmpty || asset.urlString.isEmpty)
                 }
             }
         }
