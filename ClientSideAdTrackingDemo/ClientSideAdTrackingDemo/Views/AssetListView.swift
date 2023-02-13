@@ -42,7 +42,7 @@ struct AssetListView: View {
         }
         .sheet(isPresented: $presentAddScreen) {
             AssetDetailView(asset: AssetItem(), isNewItem: true)
-        }   
+        }
         .environmentObject(assetProvider)
     }
 }
