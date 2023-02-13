@@ -21,12 +21,14 @@ struct AssetListView: View {
                     NavigationLink(destination: AssetPlaybackView(asset: asset)) {
                         Text(asset.name)
                     }
+#if os(iOS)
                     .swipeActions {
                         Button("Delete") {
                             assetProvider.deleteAsset(asset)
                         }
                         .tint(.red)
                     }
+#endif
                 }
             }
             .navigationTitle("Assets")
@@ -36,11 +38,11 @@ struct AssetListView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
-                .sheet(isPresented: $presentAddScreen) {
-                    AssetDetailView(asset: AssetItem(), isNewItem: true)
-                }
             }
         }
+        .sheet(isPresented: $presentAddScreen) {
+            AssetDetailView(asset: AssetItem(), isNewItem: true)
+        }   
         .environmentObject(assetProvider)
     }
 }

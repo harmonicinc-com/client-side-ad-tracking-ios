@@ -14,7 +14,7 @@ struct AssetDetailView: View {
     let isNewItem: Bool
     
     @Environment(\.dismiss)
-    var dismiss
+    private var dismiss
     
     @EnvironmentObject
     var assetProvider: AssetProvider

@@ -22,11 +22,20 @@ struct AssetPlaybackView: View {
     
     let asset: AssetItem
     
+    @Environment(\.dismiss)
+    private var dismiss
+    
+    @EnvironmentObject
+    private var assetProvider: AssetProvider
+    
     @StateObject
     private var adTracker = HarmonicAdTracker()
     
     @StateObject
     private var session = Session()
+    
+    @StateObject
+    private var playerVM = PlayerViewModel()
     
     @State
     private var lastDataRange: DataRange?
@@ -40,39 +49,89 @@ struct AssetPlaybackView: View {
     @State
     private var presentEditScreen = false
     
-    private let player = AVPlayer()
+#if os(tvOS)
+    @State
+    private var showDeleteAlert = false
+#endif
     
     private let decoder = JSONDecoder()
     
     private let refreshMetadataTimer = Timer.publish(every: METADATA_UPDATE_INTERVAL, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        VStack {
-            PlayerView(player: player)
-            VStack {
-                SessionView(player: player)
-                AdPodListView()
+        NavigationView {
+            Group {
+#if os(iOS)
+                VStack {
+                    PlayerView()
+                    VStack {
+                        SessionView()
+                        AdPodListView()
+                    }
+                    .padding()
+                    Spacer()
+                }
+#else
+                HStack {
+                    VStack {
+                        PlayerView()
+                        PlayerControlView()
+                        SessionView()
+                        Spacer()
+                    }
+                    .frame(width: 640)
+                    .focusSection()
+                    AdPodListView()
+                        .focusSection()
+                    Spacer()
+                }
+                .padding()
+#endif
             }
-            .padding()
-            Spacer()
         }
+        .environmentObject(adTracker)
+        .environmentObject(session)
+        .environmentObject(playerVM)
         .toolbar(content: {
+#if os(tvOS)
+            Button("Delete") {
+                showDeleteAlert = true
+            }
+#endif
             Button("Edit") {
                 presentEditScreen = true
             }
-            .sheet(isPresented: $presentEditScreen) {
-                AssetDetailView(asset: asset, isNewItem: false)
-            }
+#if os(iOS)
             Button("Load") {
                 Task {
                     await loadMedia(urlString: session.sessionInfo.mediaUrl)
                 }
             }
+#endif
         })
         .navigationTitle(asset.name)
+#if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        .environmentObject(adTracker)
-        .environmentObject(session)
+#endif
+        .sheet(isPresented: $presentEditScreen) {
+            AssetDetailView(asset: asset, isNewItem: false)
+        }
+        .alert(errorMessage, isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        }
+#if os(tvOS)
+        .alert("Confirm to delete this asset?", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                assetProvider.deleteAsset(asset)
+                dismiss()
+            }
+        }
+        .onAppear {
+            Task {
+                await loadMedia(urlString: session.sessionInfo.mediaUrl)
+            }
+        }
+#endif
         .onReceive(asset.$urlString) { url in
             session.sessionInfo.mediaUrl = url
         }
@@ -80,9 +139,6 @@ struct AssetPlaybackView: View {
             Task {
                 await checkNeedUpdate()
             }
-        }
-        .alert(errorMessage, isPresented: $showError) {
-            Button("OK", role: .cancel) {}
         }
     }
 }
@@ -135,7 +191,7 @@ extension AssetPlaybackView {
             guard let (data, _) = try await makeRequestTo(urlString) else {
                 return false
             }
-
+            
             decoder.dateDecodingStrategy = .millisecondsSince1970
             let adBeacon = try decoder.decode(AdBeacon.self, from: data)
             if let lastDataRange = adBeacon.dataRange {
@@ -149,7 +205,7 @@ extension AssetPlaybackView {
                 }
             }
             adTracker.updatePods(adBeacon.adBreaks)
-
+            
             return true
         } catch {
             errorMessage = "Error refreshing metadata with URL: \(urlString); Error: \(error)"
@@ -200,5 +256,6 @@ extension AssetPlaybackView {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         AssetPlaybackView(asset: AssetItem())
+            .environmentObject(AssetProvider())
     }
 }
