@@ -175,12 +175,15 @@ extension AssetPlaybackView {
     
     private func checkNeedUpdate() async {
         var url = session.sessionInfo.adTrackingMetadataUrl
-        let lastPlayheadTime = adTracker.getPlayheadTime()
+        let lastPlayheadTime = await adTracker.getPlayheadTime()
         let result = await refreshMetadata(urlString: url, time: lastPlayheadTime)
         if let lastDataRange = lastDataRange {
             if !isInRange(time: lastPlayheadTime, range: lastDataRange) && !result {
                 url += "&start=\(Int(lastPlayheadTime))"
-                _ = await refreshMetadata(urlString: url, time: nil)
+                Self.logger.trace("Calling refreshMetadata with start: \(Date(timeIntervalSince1970: lastPlayheadTime/1_000), privacy: .public) with url: \(url, privacy: .public)")
+                if await !refreshMetadata(urlString: url, time: nil) {
+                    Self.logger.warning("refreshMetadata for url with start: \(url, privacy: .public) returned false.")
+                }
             }
         }
     }
@@ -192,8 +195,15 @@ extension AssetPlaybackView {
                 return false
             }
             
+            if let lastPlayhead = time {
+                Self.logger.trace("Refreshing metadata with playhead: \(Date(timeIntervalSince1970: lastPlayhead/1_000), privacy: .public)")
+            } else {
+                Self.logger.trace("Refreshing metadata with start specified: \(urlString, privacy: .public)")
+            }
+            
             decoder.dateDecodingStrategy = .millisecondsSince1970
             let adBeacon = try decoder.decode(AdBeacon.self, from: data)
+            
             if let lastDataRange = adBeacon.dataRange {
                 self.lastDataRange = lastDataRange
                 if !isInRange(time: time, range: lastDataRange) {
@@ -203,8 +213,12 @@ extension AssetPlaybackView {
                     Self.logger.warning("Invalid metadata:  Time (\(timeDate, privacy: .public)) not in range (start: \(startDate, privacy: .public), end: \(endDate, privacy: .public))")
                     return false
                 }
+            } else {
+                Self.logger.warning("No DataRange returned in metadata.")
+                return false
             }
-            adTracker.updatePods(adBeacon.adBreaks)
+            
+            await adTracker.updatePods(adBeacon.adBreaks)
             
             return true
         } catch {
@@ -245,8 +259,12 @@ extension AssetPlaybackView {
     }
     
     private func isInRange(time: Double?, range: DataRange) -> Bool {
-        if let time = time, let start = range.start, let end = range.end {
-            return start...end-EARLY_FETCH_MS ~= time
+        if let time = time {
+            if let start = range.start, let end = range.end {
+                return start...(end-EARLY_FETCH_MS) ~= time
+            } else {
+                return false
+            }
         } else {
             return true
         }
