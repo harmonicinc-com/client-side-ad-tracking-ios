@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import AVFoundation
 import HarmonicClientSideAdTracking
 import os
@@ -215,6 +216,8 @@ extension AssetPlaybackView {
                 return false
             }
             
+            let adPodIDs = adBeacon.adBreaks.map { $0.id ?? "nil" }
+            Self.logger.trace("Going to update \(adBeacon.adBreaks.count) ad pods: \(adPodIDs, privacy: .public)")
             await adTracker.updatePods(adBeacon.adBreaks)
             
             return true
