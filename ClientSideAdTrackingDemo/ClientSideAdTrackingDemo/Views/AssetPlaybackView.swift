@@ -64,19 +64,20 @@ struct AssetPlaybackView: View {
     private let decoder = JSONDecoder()
     
     var body: some View {
-        NavigationView {
-            Group {
+        
+        Group {
 #if os(iOS)
+            VStack {
+                PlayerView()
                 VStack {
-                    PlayerView()
-                    VStack {
-                        SessionView()
-                        AdPodListView()
-                    }
-                    .padding()
-                    Spacer()
+                    SessionView()
+                    AdPodListView()
                 }
+                .padding()
+                Spacer()
+            }
 #else
+            NavigationView {
                 HStack {
                     VStack {
                         PlayerView()
@@ -90,8 +91,8 @@ struct AssetPlaybackView: View {
                         .focusSection()
                 }
                 .padding()
-#endif
             }
+#endif
         }
         .environmentObject(adTracker)
         .environmentObject(session)
