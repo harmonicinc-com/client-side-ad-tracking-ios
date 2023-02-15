@@ -16,8 +16,8 @@ struct PlayerControlView: View {
     @EnvironmentObject
     private var playerVM: PlayerViewModel
     
-    @State
-    private var timeControlStatus: AVPlayer.TimeControlStatus = .paused
+    @StateObject
+    private var playerObserver = PlayerObserver()
     
     var body: some View {
         HStack {
@@ -28,7 +28,7 @@ struct PlayerControlView: View {
             } label: {
                 Image(systemName: "backward.fill")
                     .resizable()
-                    .frame(width: .infinity, height: BUTTON_HEIGHT)
+                    .frame(height: BUTTON_HEIGHT)
                     
             }
             Button {
@@ -38,9 +38,9 @@ struct PlayerControlView: View {
                     playerVM.player.play()
                 }
             } label: {
-                Image(systemName: timeControlStatus == .playing ? "pause.fill" : "play.fill")
+                Image(systemName: playerObserver.primaryStatus == .playing ? "pause.fill" : "play.fill")
                     .resizable()
-                    .frame(width: .infinity, height: BUTTON_HEIGHT)
+                    .frame(height: BUTTON_HEIGHT)
             }
             Button {
                 let currentTime = playerVM.player.currentTime()
@@ -52,7 +52,7 @@ struct PlayerControlView: View {
             } label: {
                 Image(systemName: "forward.fill")
                     .resizable()
-                    .frame(width: .infinity, height: BUTTON_HEIGHT)
+                    .frame(height: BUTTON_HEIGHT)
             }
             Button {
                 guard let seekableTimeRange = playerVM.player.currentItem?.seekableTimeRanges.last as? CMTimeRange else {
@@ -62,12 +62,12 @@ struct PlayerControlView: View {
             } label: {
                 Image(systemName: "forward.end.fill")
                     .resizable()
-                    .frame(width: .infinity, height: BUTTON_HEIGHT)
+                    .frame(height: BUTTON_HEIGHT)
             }
         }
         .frame(width: 560)
-        .onReceive(playerVM.$player) { player in
-            self.timeControlStatus = player.timeControlStatus
+        .onAppear {
+            playerObserver.setPlayer(playerVM.player)
         }
     }
 }
