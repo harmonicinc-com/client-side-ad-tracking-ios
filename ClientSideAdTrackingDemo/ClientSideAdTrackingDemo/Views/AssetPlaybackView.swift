@@ -64,7 +64,6 @@ struct AssetPlaybackView: View {
     private let decoder = JSONDecoder()
     
     var body: some View {
-        
         Group {
 #if os(iOS)
             VStack {
