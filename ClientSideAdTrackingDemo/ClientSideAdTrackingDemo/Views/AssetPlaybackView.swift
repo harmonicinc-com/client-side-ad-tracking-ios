@@ -13,7 +13,7 @@ import os
 
 let AD_TRACING_METADATA_FILE_NAME = "metadata"
 let EARLY_FETCH_MS: Double = 5_000
-let METADATA_UPDATE_INTERVAL: TimeInterval = 4
+let METADATA_UPDATE_INTERVAL: TimeInterval = 2
 
 struct AssetPlaybackView: View {
     private static let logger = Logger(
@@ -55,9 +55,13 @@ struct AssetPlaybackView: View {
     private var showDeleteAlert = false
 #endif
     
-    private let decoder = JSONDecoder()
+    @State
+    private var refreshMetadataTimer = Timer.publish(every: METADATA_UPDATE_INTERVAL, on: .main, in: .common)
     
-    private let refreshMetadataTimer = Timer.publish(every: METADATA_UPDATE_INTERVAL, on: .main, in: .common).autoconnect()
+    @State
+    private var connectedTimer: Cancellable?
+    
+    private let decoder = JSONDecoder()
     
     var body: some View {
         NavigationView {
@@ -124,12 +128,19 @@ struct AssetPlaybackView: View {
                 dismiss()
             }
         }
+#endif
         .onAppear {
+#if os(tvOS)
             Task {
                 await loadMedia(urlString: session.sessionInfo.mediaUrl)
             }
-        }
 #endif
+            refreshMetadataTimer = Timer.publish(every: METADATA_UPDATE_INTERVAL, on: .main, in: .common)
+            connectedTimer = refreshMetadataTimer.connect()
+        }
+        .onDisappear {
+            connectedTimer?.cancel()
+        }
         .onReceive(asset.$urlString) { url in
             session.sessionInfo.mediaUrl = url
         }
