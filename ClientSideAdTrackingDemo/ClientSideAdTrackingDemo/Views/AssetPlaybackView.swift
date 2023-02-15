@@ -83,7 +83,6 @@ struct AssetPlaybackView: View {
                     .focusSection()
                     AdPodListView()
                         .focusSection()
-                    Spacer()
                 }
                 .padding()
 #endif
@@ -101,13 +100,11 @@ struct AssetPlaybackView: View {
             Button("Edit") {
                 presentEditScreen = true
             }
-#if os(iOS)
             Button("Load") {
                 Task {
                     await loadMedia(urlString: session.sessionInfo.mediaUrl)
                 }
             }
-#endif
         })
         .navigationTitle(asset.name)
 #if os(iOS)

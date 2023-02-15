@@ -26,7 +26,7 @@ struct PlayerControlView: View {
                 let newTime = currentTime - CMTime(seconds: 10, preferredTimescale: 600)
                 playerVM.player.seek(to: newTime)
             } label: {
-                Image(systemName: "gobackward.10")
+                Image(systemName: "backward.fill")
                     .resizable()
                     .frame(width: .infinity, height: BUTTON_HEIGHT)
                     
@@ -50,7 +50,7 @@ struct PlayerControlView: View {
                 }
                 playerVM.player.seek(to: min(newTime, newTime + seekableTimeRange.end))
             } label: {
-                Image(systemName: "goforward.10")
+                Image(systemName: "forward.fill")
                     .resizable()
                     .frame(width: .infinity, height: BUTTON_HEIGHT)
             }
