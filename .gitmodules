@@ -1,0 +1,3 @@
+[submodule "client-side-ad-tracking-lib"]
+	path = HarmonicClientSideAdTracking
+	url = https://github.com/harmonicinc-com/client-side-ad-tracking-lib
