@@ -185,6 +185,7 @@ extension AssetPlaybackView {
     private func checkNeedUpdate() async {
         var url = session.sessionInfo.adTrackingMetadataUrl
         let lastPlayheadTime = await adTracker.getPlayheadTime()
+        Self.logger.trace("Calling refreshMetadata without start; playhead is \(Date(timeIntervalSince1970: lastPlayheadTime/1_000), privacy: .public)")
         let result = await refreshMetadata(urlString: url, time: lastPlayheadTime)
         if let lastDataRange = lastDataRange {
             if !isInRange(time: lastPlayheadTime, range: lastDataRange) && !result {
@@ -204,22 +205,20 @@ extension AssetPlaybackView {
                 return false
             }
             
-            if let lastPlayhead = time {
-                Self.logger.trace("Refreshing metadata with playhead: \(Date(timeIntervalSince1970: lastPlayhead/1_000), privacy: .public)")
-            } else {
-                Self.logger.trace("Refreshing metadata with start specified: \(urlString, privacy: .public)")
-            }
-            
             decoder.dateDecodingStrategy = .millisecondsSince1970
             let adBeacon = try decoder.decode(AdBeacon.self, from: data)
             
+            let adPodIDs = adBeacon.adBreaks.map { $0.id ?? "nil" }
+            var startDate: Date = .distantPast
+            var endDate: Date = .distantPast
+            
             if let lastDataRange = adBeacon.dataRange {
                 self.lastDataRange = lastDataRange
+                startDate = Date(timeIntervalSince1970: (lastDataRange.start ?? 0) / 1_000)
+                endDate = Date(timeIntervalSince1970: (lastDataRange.end ?? 0) / 1_000)
                 if !isInRange(time: time, range: lastDataRange) {
                     let timeDate = Date(timeIntervalSince1970: (time ?? 0) / 1_000)
-                    let startDate = Date(timeIntervalSince1970: (lastDataRange.start ?? 0) / 1_000)
-                    let endDate = Date(timeIntervalSince1970: (lastDataRange.end ?? 0) / 1_000)
-                    Self.logger.warning("Invalid metadata:  Time (\(timeDate, privacy: .public)) not in range (start: \(startDate, privacy: .public), end: \(endDate, privacy: .public))")
+                    Self.logger.warning("Invalid metadata (with ad pods: \(adPodIDs, privacy: .public)):  Time (\(timeDate, privacy: .public)) not in range (start: \(startDate, privacy: .public), end: \(endDate, privacy: .public))")
                     return false
                 }
             } else {
@@ -227,8 +226,7 @@ extension AssetPlaybackView {
                 return false
             }
             
-            let adPodIDs = adBeacon.adBreaks.map { $0.id ?? "nil" }
-            Self.logger.trace("Going to update \(adBeacon.adBreaks.count) ad pods: \(adPodIDs, privacy: .public)")
+            Self.logger.trace("Going to update \(adBeacon.adBreaks.count) ad pods: \(adPodIDs, privacy: .public) with DataRange: \(startDate) to \(endDate)")
             await adTracker.updatePods(adBeacon.adBreaks)
             
             return true
