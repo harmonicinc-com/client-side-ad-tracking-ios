@@ -26,6 +26,11 @@ class AssetItem: ObservableObject, Codable, Identifiable {
     
     init() {}
     
+    init(name: String, urlString: String) {
+        self.name = name
+        self.urlString = urlString
+    }
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
