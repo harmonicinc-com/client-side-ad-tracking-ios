@@ -53,6 +53,7 @@ struct AssetPlaybackView: View {
             VStack {
                 PlayerView()
                 VStack {
+                    ToggleView()
                     SessionView()
                     AdPodListView()
                 }
@@ -66,6 +67,7 @@ struct AssetPlaybackView: View {
                         PlayerView()
                         PlayerControlView()
                             .focused($playerControlIsFocused)
+                        ToggleView()
                         SessionView()
                         Spacer()
                     }
