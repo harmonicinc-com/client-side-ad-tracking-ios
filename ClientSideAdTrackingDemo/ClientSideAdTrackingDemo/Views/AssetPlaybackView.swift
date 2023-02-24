@@ -39,6 +39,9 @@ struct AssetPlaybackView: View {
 #if os(tvOS)
     @State
     private var showDeleteAlert = false
+    
+    @FocusState
+    private var playerControlIsFocused: Bool
 #endif
     
     @Environment(\.dismiss)
@@ -62,6 +65,7 @@ struct AssetPlaybackView: View {
                     VStack {
                         PlayerView()
                         PlayerControlView()
+                            .focused($playerControlIsFocused)
                         SessionView()
                         Spacer()
                     }
@@ -71,6 +75,9 @@ struct AssetPlaybackView: View {
                         .focusSection()
                 }
                 .padding()
+            }
+            .onChange(of: playerControlIsFocused) { newValue in
+                playerVM.setPlayerControlIsFocused(newValue)
             }
 #endif
         }

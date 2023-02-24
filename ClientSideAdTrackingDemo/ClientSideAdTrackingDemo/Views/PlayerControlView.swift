@@ -29,7 +29,6 @@ struct PlayerControlView: View {
                 Image(systemName: "backward.fill")
                     .resizable()
                     .frame(height: BUTTON_HEIGHT)
-                    
             }
             Button {
                 if playerVM.player.timeControlStatus == .playing {
