@@ -67,8 +67,10 @@ struct AssetPlaybackView: View {
                         PlayerView()
                         PlayerControlView()
                             .focused($playerControlIsFocused)
-                        ToggleView()
-                        SessionView()
+                        ScrollView {
+                            ToggleView()
+                            SessionView()
+                        }
                         Spacer()
                     }
                     .frame(width: 640)
