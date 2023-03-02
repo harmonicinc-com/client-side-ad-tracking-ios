@@ -55,6 +55,7 @@ struct AssetPlaybackView: View {
                 VStack {
                     ToggleView()
                     SessionView()
+                    DetailedDebugInfoView()
                     AdPodListView()
                 }
                 .padding()
