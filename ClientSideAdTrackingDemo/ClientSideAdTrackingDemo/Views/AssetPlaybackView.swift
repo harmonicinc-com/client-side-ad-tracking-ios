@@ -66,12 +66,14 @@ struct AssetPlaybackView: View {
                 HStack {
                     VStack {
                         PlayerView()
-                        PlayerControlView()
-                            .focused($playerControlIsFocused)
-                        ScrollView {
-                            ToggleView()
-                            SessionView()
+                        Group {
+                            PlayerControlView()
+                            ScrollView {
+                                ToggleView()
+                                SessionView()
+                            }
                         }
+                        .focused($playerControlIsFocused)
                         Spacer()
                     }
                     .frame(width: 640)
