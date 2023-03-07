@@ -122,12 +122,12 @@ struct AssetPlaybackView: View {
                 dismiss()
             }
         }
+#endif
         .onAppear {
             Task {
-                await adTracker.setMediaUrl(asset.urlString)
+                await adTracker.start()
             }
         }
-#endif
         .onDisappear {
             Task {
                 await adTracker.stop()
