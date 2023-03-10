@@ -129,6 +129,8 @@ struct AssetPlaybackView: View {
             }
         }
         .onDisappear {
+            playerVM.player.pause()
+            playerVM.player.replaceCurrentItem(with: nil)
             Task {
                 await adTracker.stop()
             }
