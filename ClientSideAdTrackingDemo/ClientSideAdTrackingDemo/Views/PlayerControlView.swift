@@ -16,8 +16,8 @@ struct PlayerControlView: View {
     @EnvironmentObject
     private var playerVM: PlayerViewModel
     
-    @StateObject
-    private var playerObserver = PlayerObserver()
+    @EnvironmentObject
+    private var playerObserver: PlayerObserver
     
     var body: some View {
         HStack {
@@ -65,9 +65,6 @@ struct PlayerControlView: View {
             }
         }
         .frame(width: 560)
-        .onAppear {
-            playerObserver.setPlayer(playerVM.player)
-        }
     }
 }
 

@@ -27,6 +27,9 @@ struct AssetPlaybackView: View {
     @StateObject
     private var playerVM = PlayerViewModel()
     
+    @StateObject
+    private var playerObserver = PlayerObserver()
+    
     @State
     private var showError = false
     
@@ -90,6 +93,7 @@ struct AssetPlaybackView: View {
         }
         .environmentObject(adTracker)
         .environmentObject(playerVM)
+        .environmentObject(playerObserver)
         .toolbar(content: {
 #if os(tvOS)
             Button("Delete") {
@@ -127,6 +131,8 @@ struct AssetPlaybackView: View {
             Task {
                 await adTracker.start()
             }
+            playerObserver.setPlayer(playerVM.player)
+            adTracker.setPlayerObserver(playerObserver)
         }
         .onDisappear {
             playerVM.player.pause()
