@@ -104,6 +104,7 @@ struct AssetPlaybackView: View {
                 presentEditScreen = true
             }
             Button("Load") {
+                playerVM.player.pause()
                 Task {
                     await adTracker.setMediaUrl(asset.urlString)
                 }
