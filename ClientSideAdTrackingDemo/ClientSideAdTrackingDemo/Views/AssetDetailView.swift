@@ -8,16 +8,14 @@
 import SwiftUI
 
 struct AssetDetailView: View {
-    @ObservedObject
-    var asset: AssetItem
+    
+    @EnvironmentObject var assetProvider: AssetProvider
+    @ObservedObject var asset: AssetItem
     
     let isNewItem: Bool
     
     @Environment(\.dismiss)
     private var dismiss
-    
-    @EnvironmentObject
-    var assetProvider: AssetProvider
     
     var body: some View {
         NavigationView {

@@ -16,8 +16,7 @@ class AssetProvider: ObservableObject {
         category: String(describing: AssetProvider.self)
     )
     
-    @Published
-    var assets: [AssetItem] = []
+    @Published var assets: [AssetItem] = []
     
     init() {
         loadAssetsFromUserDefaults()

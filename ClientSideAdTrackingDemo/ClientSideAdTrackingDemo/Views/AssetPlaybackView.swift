@@ -11,40 +11,20 @@ import HarmonicClientSideAdTracking
 import os
 
 struct AssetPlaybackView: View {
-    private static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: AssetPlaybackView.self)
-    )
-    
     let asset: AssetItem
+    let player = AVPlayer()
     
-    @EnvironmentObject
-    private var assetProvider: AssetProvider
+    @EnvironmentObject private var assetProvider: AssetProvider
+    @StateObject private var session = AdBeaconingSession()
     
-    @StateObject
-    private var adTracker = HarmonicAdTracker()
-    
-    @StateObject
-    private var playerVM = PlayerViewModel()
-    
-    @StateObject
-    private var playerObserver = PlayerObserver()
-    
-    @State
-    private var showError = false
-    
-    @State
-    private var errorMessage = ""
-    
-    @State
-    private var presentEditScreen = false
+    @State private var adTracker: HarmonicAdTracker?
+    @State private var presentEditScreen = false
     
 #if os(tvOS)
-    @State
-    private var showDeleteAlert = false
-    
-    @FocusState
-    private var playerControlIsFocused: Bool
+    @State private var showDeleteAlert = false
+    @FocusState private var playerControlIsFocused: Bool
+#else
+    @State private var presentLogsScreen = false
 #endif
     
     @Environment(\.dismiss)
@@ -54,12 +34,12 @@ struct AssetPlaybackView: View {
         Group {
 #if os(iOS)
             VStack {
-                PlayerView()
+                PlayerView(session: session)
                 VStack {
-                    ToggleView()
-                    SessionView()
-                    DetailedDebugInfoView()
-                    AdPodListView()
+                    ToggleView(session: session)
+                    SessionView(session: session, playerObserver: session.playerObserver)
+                    DetailedDebugInfoView(session: session)
+                    AdPodListView(session: session)
                 }
                 .padding()
                 Spacer()
@@ -68,12 +48,12 @@ struct AssetPlaybackView: View {
             NavigationView {
                 HStack {
                     VStack {
-                        PlayerView()
+                        PlayerView(session: session)
                         Group {
-                            PlayerControlView()
+                            PlayerControlView(session: session, playerObserver: session.playerObserver)
                             ScrollView {
-                                ToggleView()
-                                SessionView()
+                                ToggleView(session: session)
+                                SessionView(session: session, playerObserver: session.playerObserver)
                             }
                         }
                         .focused($playerControlIsFocused)
@@ -81,44 +61,43 @@ struct AssetPlaybackView: View {
                     }
                     .frame(width: 640)
                     .focusSection()
-                    AdPodListView()
+                    AdPodListView(session: session)
                         .focusSection()
                 }
                 .padding()
             }
             .onChange(of: playerControlIsFocused) { newValue in
-                playerVM.setPlayerControlIsFocused(newValue)
+                session.playerControlIsFocused = newValue
             }
 #endif
         }
-        .environmentObject(adTracker)
-        .environmentObject(playerVM)
-        .environmentObject(playerObserver)
         .toolbar(content: {
 #if os(tvOS)
             Button("Delete") {
                 showDeleteAlert = true
             }
+#else
+            Button("Logs") {
+                presentLogsScreen = true
+            }
 #endif
             Button("Edit") {
                 presentEditScreen = true
             }
-            Button("Load") {
-                playerVM.player.pause()
-                Task {
-                    await adTracker.setMediaUrl(asset.urlString)
-                }
+            Button("Reload") {
+                session.player.pause()
+                session.mediaUrl = asset.urlString
             }
         })
         .navigationTitle(asset.name)
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $presentLogsScreen) {
+            LogsListView(session: session)
+        }
 #endif
         .sheet(isPresented: $presentEditScreen) {
             AssetDetailView(asset: asset, isNewItem: false)
-        }
-        .alert(errorMessage, isPresented: $showError) {
-            Button("OK", role: .cancel) {}
         }
 #if os(tvOS)
         .alert("Confirm to delete this asset?", isPresented: $showDeleteAlert) {
@@ -129,23 +108,17 @@ struct AssetPlaybackView: View {
         }
 #endif
         .onAppear {
-            Task {
-                await adTracker.start()
-            }
-            playerObserver.setPlayer(playerVM.player)
-            adTracker.setPlayerObserver(playerObserver)
+            session.player = player
+            adTracker = HarmonicAdTracker(session: session)
+            adTracker?.start()
         }
         .onDisappear {
-            playerVM.player.pause()
-            playerVM.player.replaceCurrentItem(with: nil)
-            Task {
-                await adTracker.stop()
-            }
+            session.player.pause()
+            session.player.replaceCurrentItem(with: nil)
+            adTracker?.stop()
         }
         .onReceive(asset.$urlString) { url in
-            Task {
-                await adTracker.setMediaUrl(asset.urlString)
-            }
+            session.mediaUrl = url
         }
     }
 }

@@ -13,51 +13,53 @@ let BUTTON_HEIGHT: CGFloat = 15
 
 struct PlayerControlView: View {
     
-    @EnvironmentObject
-    private var playerVM: PlayerViewModel
+    @ObservedObject private var session: AdBeaconingSession
+    @ObservedObject private var playerObserver: PlayerObserver
     
-    @EnvironmentObject
-    private var playerObserver: PlayerObserver
+    init(session: AdBeaconingSession, playerObserver: PlayerObserver) {
+        self.session = session
+        self.playerObserver = playerObserver
+    }
     
     var body: some View {
         HStack {
             Button {
-                let currentTime = playerVM.player.currentTime()
+                let currentTime = session.player.currentTime()
                 let newTime = currentTime - CMTime(seconds: 10, preferredTimescale: 600)
-                playerVM.player.seek(to: newTime)
+                session.player.seek(to: newTime)
             } label: {
                 Image(systemName: "backward.fill")
                     .resizable()
                     .frame(height: BUTTON_HEIGHT)
             }
             Button {
-                if playerVM.player.timeControlStatus == .playing {
-                    playerVM.player.pause()
+                if session.player.timeControlStatus == .playing {
+                    session.player.pause()
                 } else {
-                    playerVM.player.play()
+                    session.player.play()
                 }
             } label: {
-                Image(systemName: playerObserver.primaryStatus == .playing ? "pause.fill" : "play.fill")
+                Image(systemName: (playerObserver.primaryStatus ?? .paused) == .playing ? "pause.fill" : "play.fill")
                     .resizable()
                     .frame(height: BUTTON_HEIGHT)
             }
             Button {
-                let currentTime = playerVM.player.currentTime()
+                let currentTime = session.player.currentTime()
                 let newTime = currentTime + CMTime(seconds: 10, preferredTimescale: 600)
-                guard let seekableTimeRange = playerVM.player.currentItem?.seekableTimeRanges.last as? CMTimeRange else {
+                guard let seekableTimeRange = session.player.currentItem?.seekableTimeRanges.last as? CMTimeRange else {
                     return
                 }
-                playerVM.player.seek(to: min(newTime, newTime + seekableTimeRange.end))
+                session.player.seek(to: min(newTime, newTime + seekableTimeRange.end))
             } label: {
                 Image(systemName: "forward.fill")
                     .resizable()
                     .frame(height: BUTTON_HEIGHT)
             }
             Button {
-                guard let seekableTimeRange = playerVM.player.currentItem?.seekableTimeRanges.last as? CMTimeRange else {
+                guard let seekableTimeRange = session.player.currentItem?.seekableTimeRanges.last as? CMTimeRange else {
                     return
                 }
-                playerVM.player.seek(to: seekableTimeRange.end)
+                session.player.seek(to: seekableTimeRange.end)
             } label: {
                 Image(systemName: "forward.end.fill")
                     .resizable()
@@ -70,7 +72,7 @@ struct PlayerControlView: View {
 
 struct PlayerControlView_Previews: PreviewProvider {
     static var previews: some View {
-        PlayerControlView()
-            .environmentObject(PlayerViewModel())
+        let session = AdBeaconingSession()
+        PlayerControlView(session: session, playerObserver: session.playerObserver)
     }
 }

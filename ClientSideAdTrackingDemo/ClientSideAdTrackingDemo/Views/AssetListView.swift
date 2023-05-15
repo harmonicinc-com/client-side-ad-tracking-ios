@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct AssetListView: View {
-    @ObservedObject
-    private var assetProvider = AssetProvider()
+    @ObservedObject private var assetProvider = AssetProvider()
     
-    @State
-    private var presentAddScreen = false
+    @State private var presentAddScreen = false
     
     var body: some View {
         NavigationView {
