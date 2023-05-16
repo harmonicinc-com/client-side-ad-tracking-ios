@@ -11,6 +11,11 @@ import HarmonicClientSideAdTracking
 import os
 
 struct AssetPlaybackView: View {
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: AssetPlaybackView.self)
+    )
+    
     let asset: AssetItem
     let player = AVPlayer()
     
@@ -119,6 +124,19 @@ struct AssetPlaybackView: View {
         }
         .onReceive(asset.$urlString) { url in
             session.mediaUrl = url
+        }
+        .onReceive(session.sessionInfo.$manifestUrl) { manifestUrl in
+            if !manifestUrl.isEmpty {
+                guard let url = URL(string: manifestUrl) else {
+                    Utility.log("Failed to intiailize URL with manifestUrl: \(manifestUrl)",
+                                to: session, level: .warning, with: Self.logger)
+                    return
+                }
+                let playerItem = AVPlayerItem(url: url)
+                playerItem.automaticallyPreservesTimeOffsetFromLive = session.automaticallyPreservesTimeOffsetFromLive
+                session.player.replaceCurrentItem(with: playerItem)
+                session.player.play()
+            }
         }
     }
 }
