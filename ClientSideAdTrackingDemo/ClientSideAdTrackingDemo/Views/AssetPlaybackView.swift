@@ -90,8 +90,14 @@ struct AssetPlaybackView: View {
                 presentEditScreen = true
             }
             Button("Reload") {
-                session.player.pause()
+                stop()
                 session.mediaUrl = asset.urlString
+                adTracker = nil
+                adTracker = HarmonicAdTracker(session: session)
+                adTracker?.start()
+            }
+            Button("Stop") {
+                stop()
             }
         })
         .navigationTitle(asset.name)
@@ -118,9 +124,7 @@ struct AssetPlaybackView: View {
             adTracker?.start()
         }
         .onDisappear {
-            session.player.pause()
-            session.player.replaceCurrentItem(with: nil)
-            adTracker?.stop()
+            stop()
         }
         .onReceive(asset.$urlString) { url in
             session.mediaUrl = url
@@ -138,6 +142,15 @@ struct AssetPlaybackView: View {
                 session.player.play()
             }
         }
+    }
+}
+
+extension AssetPlaybackView {
+    func stop() {
+        player.pause()
+        player.replaceCurrentItem(with: nil)
+        adTracker?.stop()
+        session.cleanup()
     }
 }
 
