@@ -40,6 +40,7 @@ struct AssetPlaybackView: View {
 #if os(iOS)
             VStack {
                 PlayerView(session: session)
+                PlayerControlView(session: session, playerObserver: session.playerObserver, adTracker: adTracker)
                 VStack {
                     ToggleView(session: session)
                     SessionView(session: session, playerObserver: session.playerObserver)
@@ -55,7 +56,7 @@ struct AssetPlaybackView: View {
                     VStack {
                         PlayerView(session: session)
                         Group {
-                            PlayerControlView(session: session, playerObserver: session.playerObserver)
+                            PlayerControlView(session: session, playerObserver: session.playerObserver, adTracker: adTracker)
                             ScrollView {
                                 ToggleView(session: session)
                                 SessionView(session: session, playerObserver: session.playerObserver)
